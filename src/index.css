@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg {
+    background: url('./assets/pic.pnj.png');
+    background-size: cover;
+    height: 70vh;
+}
+
