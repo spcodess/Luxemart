@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountPage() {
+  const navigate = useNavigate();
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center bg-purple-50">
+    <div className="min-h-[60vh] flex flex-col items-center justify-center bg-white">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-purple-700 text-center">
           My Account
@@ -17,7 +19,7 @@ export default function AccountPage() {
           <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded transition mb-2">
             Edit Profile
           </button>
-          <button className="w-full border border-purple-300 py-2 rounded text-purple-700 hover:bg-purple-50 transition">
+          <button onClick={() => navigate('/orders')} className="w-full border border-purple-300 py-2 rounded text-purple-700 hover:bg-purple-50 transition">
             View Orders
           </button>
         </div>

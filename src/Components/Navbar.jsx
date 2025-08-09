@@ -1,10 +1,12 @@
-import { ShoppingCart, User } from "lucide-react";
+import { ShoppingCart, User, Menu } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import UserDropdownPortal from "./UserDropdownPortal";
 
-function Navbar({ cartItems = [], onSearch }) {
+function Navbar({ cartItems = [], onSearch, onOpenCart }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const userButtonRef = useRef(null);
@@ -20,7 +22,6 @@ function Navbar({ cartItems = [], onSearch }) {
     navigate("/");
   };
 
-  // When search input changes, update state and reset search if cleared
   const handleInputChange = (e) => {
     setSearch(e.target.value);
     if (onSearch && e.target.value === "") {
@@ -40,21 +41,22 @@ function Navbar({ cartItems = [], onSearch }) {
         setIsOpen(false);
       }
     };
-
-    // Add event listener
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  // Close mobile nav on route change
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [navigate]);
+
   return (
-    <header className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-white shadow-lg">
-      <nav className="container mx-auto flex items-center justify-between px-4 py-4">
+    <header className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-white shadow-lg z-[9999] relative overflow-visible">
+      <nav className="container-fluid flex items-center justify-between py-3 sm:py-4 relative">
         {/* Left: Logo + Links */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center">
             <div className="flex items-center">
               <div className="bg-white/20 backdrop-blur-sm w-10 h-10 rounded-lg flex items-center justify-center mr-3">
@@ -65,7 +67,16 @@ function Navbar({ cartItems = [], onSearch }) {
               </div>
             </div>
           </Link>
-          <ul className="flex gap-8 items-center">
+          {/* Hamburger for mobile */}
+          <button
+            className="sm:hidden ml-2 p-2 rounded-lg bg-white/20 hover:bg-white/30 transition"
+            onClick={() => setMobileNavOpen(!mobileNavOpen)}
+            aria-label="Toggle navigation"
+          >
+            <Menu size={24} />
+          </button>
+          {/* Desktop Nav */}
+          <ul className="hidden sm:flex gap-8 items-center ml-8">
             <li>
               <Link
                 to="/"
@@ -102,7 +113,7 @@ function Navbar({ cartItems = [], onSearch }) {
         </div>
 
         {/* Center: Search Bar */}
-        <form className="w-1/3" onSubmit={handleSearchSubmit}>
+        <form className="w-1/3 hidden md:block" onSubmit={handleSearchSubmit}>
           <input
             type="text"
             placeholder="Search Product"
@@ -123,33 +134,36 @@ function Navbar({ cartItems = [], onSearch }) {
             <User size={20} className="text-white" />
           </span>
           {isOpen && (
-            <div
-              ref={dropdownRef}
-              className="absolute right-0 top-12 z-10 bg-white text-gray-800 p-4 gap-4 w-40 flex flex-col shadow-xl rounded-xl border border-gray-100"
-            >
-              <li className="list-none">
-                <Link 
-                  to="/signin" 
-                  className="hover:text-purple-600 transition-colors duration-200 font-medium block"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Sign In
-                </Link>
-              </li>
-              <li className="list-none">
-                <Link 
-                  to="/account" 
-                  className="hover:text-purple-600 transition-colors duration-200 font-medium block"
-                  onClick={() => setIsOpen(false)}
-                >
-                  My Account
-                </Link>
-              </li>
-            </div>
+            <UserDropdownPortal>
+              <div
+                ref={dropdownRef}
+                style={{ position: 'absolute', right: '20px', top: '70px', zIndex: 9999 }}
+                className="bg-white text-gray-800 p-4 gap-4 w-40 flex flex-col shadow-xl rounded-xl border border-gray-100"
+              >
+                <li className="list-none">
+                  <Link 
+                    to="/signin" 
+                    className="hover:text-purple-600 transition-colors duration-200 font-medium block"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                </li>
+                <li className="list-none">
+                  <Link 
+                    to="/account" 
+                    className="hover:text-purple-600 transition-colors duration-200 font-medium block"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    My Account
+                  </Link>
+                </li>
+              </div>
+            </UserDropdownPortal>
           )}
           {/* Cart Icon */}
-          <Link
-            to="/cart"
+          <button
+            onClick={onOpenCart}
             className="bg-white/20 backdrop-blur-sm p-3 rounded-full hover:bg-white/30 transition-all duration-300 relative"
           >
             <ShoppingCart className="text-white" size={20} />
@@ -158,8 +172,64 @@ function Navbar({ cartItems = [], onSearch }) {
                 {cartCount}
               </span>
             )}
-          </Link>
+          </button>
         </div>
+
+        {/* Mobile Nav */}
+        {mobileNavOpen && (
+          <div className="absolute top-full left-0 w-full bg-white text-gray-800 shadow-lg z-20 sm:hidden">
+            <ul className="flex flex-col gap-2 p-4">
+              <li>
+                <Link
+                  to="/"
+                  className="hover:text-purple-600 transition-colors duration-200 font-medium block py-2"
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about"
+                  className="hover:text-purple-600 transition-colors duration-200 font-medium block py-2"
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faqs"
+                  className="hover:text-purple-600 transition-colors duration-200 font-medium block py-2"
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="hover:text-purple-600 transition-colors duration-200 font-medium block py-2"
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  Contact
+                </Link>
+              </li>
+              {/* Mobile Search */}
+              <li>
+                <form onSubmit={handleSearchSubmit} className="py-2">
+                  <input
+                    type="text"
+                    placeholder="Search Product"
+                    className="border rounded-full px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-800 placeholder-gray-500"
+                    value={search}
+                    onChange={handleInputChange}
+                  />
+                </form>
+              </li>
+            </ul>
+          </div>
+        )}
       </nav>
     </header>
   );

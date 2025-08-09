@@ -20,14 +20,17 @@ function Home({ onAddToCart, searchTerm = "" }) {
   const productsPerPage = 20;
 
   const handleBuyNow = (product) => {
-    alert("Proceed to buy: " + product.title);
+    if (onAddToCart) {
+      onAddToCart(product);
+      navigate("/checkout");
+    }
   };
 
   const handleShopNow = () => {
     // Scroll to the products section
-    const productsSection = document.getElementById('products-section');
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: 'smooth' });
+    const categoriesSection = document.getElementById('categories-section');
+    if (categoriesSection) {
+      categoriesSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -63,10 +66,10 @@ function Home({ onAddToCart, searchTerm = "" }) {
   // Handle page changes
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Scroll to top of products section when page changes
-    const productsSection = document.getElementById('products-section');
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to categories section when page changes
+    const categoriesSection = document.getElementById('categories-section');
+    if (categoriesSection) {
+      categoriesSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -78,15 +81,15 @@ function Home({ onAddToCart, searchTerm = "" }) {
   return (
     <div>
       {/* Modern Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400">
+      <div className="relative bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 z-10">
         <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
+        <div className="relative container-fluid py-16 sm:py-20 lg:py-24">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6">
               Discover Amazing
               <span className="block text-yellow-300">Products</span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-6 sm:mb-8 max-w-4xl mx-auto px-4">
               Shop the latest trends in fashion, home & kitchen, sports, and beauty. 
               Quality products delivered to your doorstep.
             </p>
@@ -120,9 +123,9 @@ function Home({ onAddToCart, searchTerm = "" }) {
       </div>
 
       {/* Features Section */}
-      <div className="bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="bg-gray-50 py-12 sm:py-16">
+        <div  className="container-fluid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center">
               <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Truck className="w-8 h-8 text-purple-600" />
@@ -149,11 +152,11 @@ function Home({ onAddToCart, searchTerm = "" }) {
       </div>
 
       {/* Categories Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+      <div id="categories-section" className="container-fluid py-10 sm:py-12">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6 sm:mb-8">
           Shop by Category
         </h2>
-        <div className="flex flex-wrap gap-4 items-center justify-center">
+        <div className="flex flex-wrap gap-3 sm:gap-4 items-center justify-center">
           {categories.map((category) => {
             return (
               <button
@@ -173,12 +176,12 @@ function Home({ onAddToCart, searchTerm = "" }) {
       </div>
 
       {/* Products Section */}
-      <div id="products-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">
+      <div id="products-section" className="container-fluid pb-12 sm:pb-16">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 gap-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
             {selectedCategory === "All" ? "Featured Products" : `${selectedCategory} Products`}
           </h2>
-          <div className="text-gray-600">
+          <div className="text-sm sm:text-base text-gray-600">
             Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
             {selectedCategory !== "All" && ` in ${selectedCategory}`}
           </div>
@@ -202,42 +205,56 @@ function Home({ onAddToCart, searchTerm = "" }) {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-12 gap-2">
+              <div className="flex flex-col sm:flex-row justify-center items-center mt-8 sm:mt-12 gap-3 sm:gap-2">
                 {/* Previous Button */}
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto justify-center"
                 >
-                  <ChevronLeft size={20} />
-                  Previous
+                  <ChevronLeft size={18} />
+                  <span className="hidden xs:inline">Previous</span>
+                  <span className="xs:hidden">Prev</span>
                 </button>
 
                 {/* Page Numbers */}
-                <div className="flex gap-2">
-                  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => handlePageChange(page)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                        currentPage === page
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
+                <div className="flex gap-1 sm:gap-2 flex-wrap justify-center max-w-full overflow-x-auto">
+                  {Array.from({ length: Math.min(totalPages, 7) }, (_, index) => {
+                    let page;
+                    if (totalPages <= 7) {
+                      page = index + 1;
+                    } else if (currentPage <= 4) {
+                      page = index + 1;
+                    } else if (currentPage >= totalPages - 3) {
+                      page = totalPages - 6 + index;
+                    } else {
+                      page = currentPage - 3 + index;
+                    }
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-2 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 text-sm sm:text-base min-w-[32px] sm:min-w-[40px] ${
+                          currentPage === page
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Next Button */}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto justify-center"
                 >
-                  Next
-                  <ChevronRight size={20} />
+                  <span className="hidden xs:inline">Next</span>
+                  <span className="xs:hidden">Next</span>
+                  <ChevronRight size={18} />
                 </button>
               </div>
             )}

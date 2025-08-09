@@ -30,36 +30,36 @@ function ProductCard({ product, onAddToCart, onBuyNow }) {
 
       {/* Full Details Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl p-10 max-w-2xl w-full relative">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-10 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
             <button
-              className="absolute top-2 right-2 text-xl text-purple-700"
+              className="absolute top-3 right-3 text-2xl text-purple-700 hover:text-purple-900 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               onClick={() => setShowModal(false)}
             >
               &times;
             </button>
-            <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-4">
               <img
                 src={product.image}
                 alt={product.title}
-                className="w-full md:w-72 h-72 object-cover rounded-2xl mb-4 shadow"
+                className="w-full lg:w-72 h-48 sm:h-64 lg:h-72 object-cover rounded-2xl shadow"
               />
               <div className="flex-1 flex flex-col justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2 text-purple-800">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-2 text-purple-800 pr-8">
                     {product.title}
                   </h2>
-                  <p className="mb-4 text-gray-700">{product.description}</p>
-                  <p className="text-lg font-semibold text-purple-700 mb-2">
+                  <p className="mb-4 text-gray-700 text-sm sm:text-base">{product.description}</p>
+                  <p className="text-lg sm:text-xl font-semibold text-purple-700 mb-2">
                     ₹{product.price}
                   </p>
-                  <p className="text-sm text-gray-500 mb-2">
+                  <p className="text-sm text-gray-500 mb-4">
                     {product.category}
                   </p>
                 </div>
-                <div className="flex gap-4 mt-6">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
                   <button
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded transition"
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-colors font-medium flex-1 sm:flex-none"
                     onClick={() => {
                       if (onAddToCart) onAddToCart(product);
                       setShowModal(false);
@@ -68,7 +68,7 @@ function ProductCard({ product, onAddToCart, onBuyNow }) {
                     Add to Cart
                   </button>
                   <button
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition"
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-colors font-medium flex-1 sm:flex-none"
                     onClick={() => {
                       if (onBuyNow) onBuyNow(product);
                       setShowModal(false);
